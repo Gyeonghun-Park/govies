@@ -10,8 +10,9 @@ const Tabs = createBottomTabNavigator();
 
 export default ({ navigation, route }) => {
   useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route) ?? "Movies";
     navigation.setOptions({
-      title: getFocusedRouteNameFromRoute(route) ?? "Movies",
+      title: routeName,
     });
   }, [route]);
   return (
