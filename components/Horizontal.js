@@ -3,7 +3,10 @@ import styled from "styled-components/native";
 import PropTypes from "prop-types";
 import { TouchableOpacity } from "react-native";
 import Poster from "./Poster";
+import Votes from "./Votes";
+import { apiImage } from "../api";
 import { trimText, formatDate } from "../utils";
+import { useNavigation } from "@react-navigation/native";
 
 const Container = styled.View`
   padding: 0px 30px;
@@ -31,24 +34,36 @@ const ReleaseDate = styled.Text`
 
 const Overview = styled.Text`
   margin-top: 10px;
-  opacity: 0.8;
   color: white;
+  opacity: 0.8;
 `;
 
-const Horizontal = ({ id, title, poster, overview, releaseDate }) => (
-  <TouchableOpacity>
-    <Container>
-      <Poster url={poster} />
-      <Data>
-        <Title>{trimText(title, 30)}</Title>
-        {releaseDate ? (
-          <ReleaseDate>{formatDate(releaseDate)}</ReleaseDate>
-        ) : null}
-        <Overview>{trimText(overview, 80)}</Overview>
-      </Data>
-    </Container>
-  </TouchableOpacity>
-);
+const Horizontal = ({ id, title, poster, overview, releaseDate }) => {
+  const navigation = useNavigation();
+  const goToDetai = () => {
+    navigation.navigate("Detail", {
+      id,
+      title,
+      poster,
+      overview,
+      releaseDate,
+    });
+  };
+  return (
+    <TouchableOpacity onPress={goToDetai}>
+      <Container>
+        <Poster url={poster} />
+        <Data>
+          <Title>{trimText(title, 30)}</Title>
+          {releaseDate ? (
+            <ReleaseDate>{formatDate(releaseDate)}</ReleaseDate>
+          ) : null}
+          <Overview>{trimText(overview, 80)}</Overview>
+        </Data>
+      </Container>
+    </TouchableOpacity>
+  );
+};
 
 Horizontal.propTypes = {
   id: PropTypes.number.isRequired,
