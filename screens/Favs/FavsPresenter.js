@@ -21,7 +21,7 @@ const styles = {
   top: 80,
   height: HEIGHT / 1.5,
   width: "90%",
-  position: "absolute",
+  position: "absolute"
 };
 
 export default ({ results }) => {
@@ -36,19 +36,26 @@ export default ({ results }) => {
       Animated.spring(position, {
         toValue: {
           x: 0,
-          y: 0,
-        },
+          y: 0
+        }
       }).start();
-    },
+    }
   });
   const roationValues = position.x.interpolate({
-    inputRange: [-100, 0, 100],
-    outputRange: ["-5deg", "0deg", "5deg"],
-    extrapolate: "clamp",
+    inputRange: [-255, 0, 255],
+    outputRange: ["-8deg", "0deg", "8deg"],
+    extrapolate: "clamp"
   });
-  setInterval(() => {
-    console.log(roationValues);
-  }, 500);
+  const secondCardOpacity = position.x.interpolate({
+    inputRange: [-255, 0, 255],
+    outputRange: [1, 0.2, 1],
+    extrapolate: "clamp"
+  });
+  const secondCardScale = position.x.interpolate({
+    inputRange: [-255, 0, 255],
+    outputRange: [1, 0.8, 1],
+    extrapolate: "clamp"
+  });
   return (
     <Container>
       {results.map((result, index) => {
@@ -60,8 +67,37 @@ export default ({ results }) => {
                 zIndex: 1,
                 transform: [
                   { rotate: roationValues },
-                  ...position.getTranslateTransform(),
-                ],
+                  ...position.getTranslateTransform()
+                ]
+              }}
+              key={result.id}
+              {...panResponder.panHandlers}
+            >
+              <Poster source={{ uri: apiImage(result.poster_path) }} />
+            </Animated.View>
+          );
+        } else if (index === topIndex + 1) {
+          return (
+            <Animated.View
+              style={{
+                ...styles,
+                zIndex: -index,
+                opacity: secondCardOpacity,
+                transform: [{ scale: secondCardScale }]
+              }}
+              key={result.id}
+              {...panResponder.panHandlers}
+            >
+              <Poster source={{ uri: apiImage(result.poster_path) }} />
+            </Animated.View>
+          );
+        } else {
+          return (
+            <Animated.View
+              style={{
+                ...styles,
+                zIndex: -index,
+                opacity: 0
               }}
               key={result.id}
               {...panResponder.panHandlers}
@@ -70,18 +106,6 @@ export default ({ results }) => {
             </Animated.View>
           );
         }
-        return (
-          <Animated.View
-            style={{
-              ...styles,
-              zIndex: -index,
-            }}
-            key={result.id}
-            {...panResponder.panHandlers}
-          >
-            <Poster source={{ uri: apiImage(result.poster_path) }} />
-          </Animated.View>
-        );
       })}
     </Container>
   );
